@@ -1,0 +1,17 @@
+# Copy this file to the consuming repository's .github/workflows/ci.yml.
+# Replace @main with a verified version tag or full commit SHA for stable builds.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  quality:
+    uses: shenshou/Project-Development-System/.github/workflows/frontend-ci.yml@main
+    with:
+      node-version: '24'
+      run-build: true
+      run-tests: false
+      run-audit: false

@@ -1,0 +1,79 @@
+name: Reusable Frontend CI
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: Node.js version
+        required: false
+        type: string
+        default: '24'
+      run-build:
+        description: Run the production build (requires a build script)
+        required: false
+        type: boolean
+        default: true
+      run-tests:
+        description: Run the test script when configured
+        required: false
+        type: boolean
+        default: false
+      test-command:
+        description: Test command used when run-tests is enabled
+        required: false
+        type: string
+        default: 'npm test -- --run'
+      run-audit:
+        description: Run npm audit when a package lockfile exists
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+      - name: Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          elif [ -f npm-shrinkwrap.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+      - name: Run tests
+        if: inputs.run-tests
+        env:
+          TEST_COMMAND: ${{ inputs.test-command }}
+        run: |
+          if node -e "process.exit(require('./package.json').scripts?.test ? 0 : 1)"; then
+            eval "$TEST_COMMAND"
+          else
+            echo "run-tests is enabled, but package.json has no test script." >&2
+            exit 1
+          fi
+      - name: Dependency audit
+        if: inputs.run-audit
+        run: |
+          if [ -f package-lock.json ] || [ -f npm-shrinkwrap.json ]; then
+            npm audit --audit-level=moderate
+          else
+            echo "No npm lockfile found; skipping npm audit."
+          fi
+      - name: Production build
+        if: inputs.run-build
+        run: |
+          if node -e "process.exit(require('./package.json').scripts?.build ? 0 : 1)"; then
+            npm run build
+          else
+            echo "run-build is enabled, but package.json has no build script." >&2
+            exit 1
+          fi
