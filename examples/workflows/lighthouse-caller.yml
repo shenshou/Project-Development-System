@@ -1,4 +1,4 @@
-# Copy to the consuming repository and add schedule/workflow_dispatch as needed.
+# Copy this example to the consuming repository's .github/workflows/lighthouse.yml.
 # Replace @main with a verified version tag or full commit SHA for stable builds.
 name: Lighthouse
 

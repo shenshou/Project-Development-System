@@ -1,4 +1,4 @@
-# Copy this file to the consuming repository's .github/workflows/ci.yml.
+# Copy this example to the consuming repository's .github/workflows/ci.yml.
 # Replace @main with a verified version tag or full commit SHA for stable builds.
 name: CI
 

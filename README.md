@@ -11,8 +11,8 @@
 | `standards/` | 跨技术栈的工程原则、生命周期、测试、安全、性能和文档规范 |
 | `skills/project-development/` | 可供支持 Agent Skills 的 AI 编程工具读取的开发 Skill |
 | `templates/vue3-javascript/` | Vue 3 + JavaScript + Vite 最小项目起点 |
-| `.github/workflows/` | 可被其他仓库调用的 GitHub Actions 工作流及调用示例 |
-| `examples/myonlinetools/` | 从 MyOnlineTools 提炼的实践案例和适用边界 |
+| `.github/workflows/` | 可复用的 GitHub Actions 工作流和仓库自身验证流程 |
+| `examples/` | MyOnlineTools 实践案例及消费项目的工作流调用示例 |
 
 ## 快速使用
 
@@ -36,7 +36,7 @@ npm run build
 
 ### 3. 复用 GitHub Actions
 
-在消费项目的 `.github/workflows/ci.yml` 中调用：
+可参考 `examples/workflows/frontend-ci-caller.yml`，在消费项目的 `.github/workflows/ci.yml` 中调用：
 
 ```yaml
 name: CI
@@ -57,7 +57,7 @@ jobs:
 
 正式项目建议将 `@main` 替换为经过验证的版本 tag 或完整 commit SHA，以避免上游变化影响构建。启用测试、审计前，确认项目脚本、锁文件和依赖管理方式符合工作流要求。工作流默认只申请 `contents: read` 权限；部署权限和 secrets 应由消费项目单独配置。
 
-Lighthouse 工作流同样可复用。调用方应自行配置 `workflow_dispatch` 或 `schedule` 触发器，并传入实际可访问的 `audit-url`；性能分数受运行环境影响，应作为趋势指标而非绝对质量结论。
+Lighthouse 工作流同样可复用，调用示例见 `examples/workflows/lighthouse-caller.yml`。调用方应自行配置 `workflow_dispatch` 或 `schedule` 触发器，并传入实际可访问的 `audit-url`；性能分数受运行环境影响，应作为趋势指标而非绝对质量结论。
 
 ## 工程原则
 
